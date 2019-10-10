@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.cmc.mapper.OrderMapper">
+
+
+    <select id="orderInfoqueryTable"  resultType="com.ai.cloudframe.provider.api.sys.model.vo.GoodsOrderVo"  parameterType="com.ai.cloudframe.provider.api.sys.model.vo.GoodsOrderVo">
+        SELECT
+        tgo.ORDER_ID,
+        tgo.GOOD_ID,
+        tgo.ORDER_STATUS,
+        tg.GOOD_NAME,
+        tg.ORDER_TYPE,
+        tg.START_DATE,
+        tg.END_DATE,
+        tgo.ORDER_DATE
+        FROM
+        tf_asiainfo_goods_order tgo,
+        tf_asiainfo_goods tg
+        WHERE
+        tgo.GOOD_ID = tg.GOOD_ID
+        and tgo.USER_ID = #{goodsVo.userId}
+
+        <if test="goodsVo.goodName!=null and goodsVo.goodName!=''">
+            AND tg.GOOD_NAME LIKE '%'||#{goodsVo.goodName}||'%'
+        </if>
+
+        <if test="goodsVo.goodType!=null and goodsVo.goodType!=''">
+            AND tg.GOOD_TYPE = #{goodsVo.goodType}
+        </if>
+
+        <if test="goodsVo.orderType!=null and goodsVo.orderType!=''">
+            AND tg.ORDER_TYPE = #{goodsVo.orderType}
+        </if>
+
+        <if test="goodsVo.orderDateStr!='' and goodsVo.orderDateStr!= null ">
+            AND tgo.ORDER_DATE LIKE '%'||#{goodsVo.orderDateStr}||'%'
+        </if>
+    </select>
+
+</mapper>

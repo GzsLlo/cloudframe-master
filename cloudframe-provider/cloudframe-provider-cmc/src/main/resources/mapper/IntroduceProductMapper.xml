@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.cmc.mapper.IntroduceProductMapper">
+
+
+    <select id="selectIntroduceProduct" resultType="com.ai.cloudframe.provider.cmc.entity.IntroduceProduct" parameterType="Map">
+        SELECT INTRODUCE_PRODUCT_ID,INTRODUCE_PRODUCT_NAME,INTRODUCE_PRODUCT_TYPE,ATOM_ID,CHARGE_TYPE,PRODUCT_PRICE,INTRODUCE_STATUS,TEST_STATUS,INTRODUCE_PRODUCT_DATAIL,VERSION_NUMBER,EXAMINE_USER_ID,EXAMINE_DATE,EXAMINE_DETAIL,RELEASE_DATE,CREATE_USER_ID,ATOM_URL,START_DATE,END_DATE,PRODUCT_ID
+        FROM tf_asiainfo_introduce_product
+        WHERE sysdate <![CDATA[ >= ]]>  START_DATE AND sysdate <![CDATA[ <= ]]>  END_DATE
+        <if test="map.introduceProductType!=null and map.introduceProductType!='' ">
+            AND INTRODUCE_PRODUCT_TYPE = #{map.introduceProductType}
+        </if>
+        <if test="map.introduceStatus!=null and map.introduceStatus!='' ">
+            AND INTRODUCE_STATUS = #{map.introduceStatus}
+        </if>
+        <if test="map.testStatus!=null and map.testStatus!='' ">
+            AND TEST_STATUS = #{map.testStatus}
+        </if>
+        <if test="map.introduceProductName!=null and map.introduceProductName!='' ">
+            AND INTRODUCE_PRODUCT_NAME like '%'||#{map.introduceProductName}||'%'
+        </if>
+        <if test="map.ORDER_COLUMN!=null and map.ORDER_TYPE!=null">
+            ORDER BY
+            <if test="map.ORDER_COLUMN!=null and map.ORDER_COLUMN=='EXAMINE_DATE'">
+                EXAMINE_DATE
+            </if>
+            <if test="map.ORDER_COLUMN!=null and map.ORDER_COLUMN=='START_DATE'">
+                START_DATE
+            </if>
+            <if test="map.ORDER_COLUMN!=null and map.ORDER_COLUMN=='RELEASE_DATE'">
+                RELEASE_DATE
+            </if>
+            <if test="map.ORDER_TYPE!=null and map.ORDER_TYPE=='ascending'">
+                ASC
+            </if>
+            <if test="map.ORDER_TYPE!=null and map.ORDER_TYPE=='descending'">
+                DESC
+            </if>
+        </if>
+    </select>
+
+
+
+    <update id="introduceProductsStatusUpdate">
+        UPDATE tf_asiainfo_introduce_product
+        SET INTRODUCE_STATUS = #{introduceStatus}
+        <if test="examineDate!=null  ">
+            ,EXAMINE_DATE = #{examineDate}
+        </if>
+        <if test="examineDetail!=null and examineDetail!='' ">
+            ,EXAMINE_DETAIL = #{examineDetail}
+        </if>
+        <if test="examineUserId!=null and examineUserId!='' ">
+            ,EXAMINE_USER_ID = #{examineUserId}
+        </if>
+        <if test="productPrice!=null and productPrice!='' ">
+            ,PRODUCT_PRICE = #{productPrice}
+        </if>
+        <if test="releaseDate!=null ">
+            ,RELEASE_DATE = #{releaseDate}
+        </if>
+        WHERE INTRODUCE_PRODUCT_ID = #{introduceProductId} AND sysdate <![CDATA[ >= ]]>  START_DATE AND sysdate <![CDATA[ <= ]]>  END_DATE
+
+    </update>
+
+
+</mapper>

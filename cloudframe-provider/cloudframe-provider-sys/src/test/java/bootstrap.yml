@@ -1,0 +1,40 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://root:root@localhost:8762/eureka/
+server:
+  port: 8762
+spring:
+  application:
+    name: service-hi
+  datasource:
+    url: jdbc:mysql://121.42.237.56:3306/cen_dev?characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false
+    username: pension
+    password: Pension123.
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat,wall,log4j
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    useGlobalDataSourceStat: true
+
+  #mybatis
+  mybatis-plus:
+    mapper-locations: classpath:/mapper/*Mapper.xml
+    typeAliasesPackage: com.ai.cloudframe.provider.sys.entity
+    global-config:
+      column-underline: false
+    configuration:
+      map-underscore-to-camel-case: true
+      cache-enabled: false

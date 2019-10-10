@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.cmc.mapper.RolePermissionMapper">
+
+  <update id="addRolePermission" parameterType="java.util.Set">
+    UPDATE
+      td_asiainfo_rolepermission
+    SET
+      END_DATE = to_date('2099-12-31 23:59:59','yyyy-mm-dd hh24:mi:ss')
+    WHERE
+      (ROLE_CODE = 'customer'
+      OR
+      ROLE_CODE = 'partner')
+    <if test="permissionCodes != null and permissionCodes.size > 0">
+      AND PERMISSION_CODE in
+      <foreach item="item" index="index" collection="permissionCodes" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </update>
+
+  <update id="deleteRolePermission">
+    UPDATE
+      td_asiainfo_rolepermission
+    SET
+      END_DATE = sysdate
+    WHERE
+      (ROLE_CODE = 'customer'
+      OR
+      ROLE_CODE = 'partner')
+    <if test="permissionCodes != null and permissionCodes.size > 0">
+      AND PERMISSION_CODE in
+      <foreach item="item" index="index" collection="permissionCodes" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </update>
+
+</mapper>

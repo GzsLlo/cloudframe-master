@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.cmc.mapper.DeployMapper">
+
+  <select id="getDeployInfo" resultType="com.ai.cloudframe.provider.api.sys.model.vo.DeployVo"
+          parameterType="Map">
+    SELECT
+      deploy_id,
+      original_ip,
+      original_user,
+      original_pwd,
+      original_url,
+      target_ip,
+      target_user,
+      target_pwd,
+      target_url,
+      start_file,
+      stop_file
+    FROM
+      tf_f_asiainfo_deploy
+  </select>
+
+  <update id="updateDeployInfo"  parameterType="com.ai.cloudframe.provider.api.sys.model.vo.DeployVo">
+    UPDATE
+      tf_f_asiainfo_deploy
+    SET DEPLOY_ID = '07ec1e-0372-4dc1-b314f-46bfc1e400fb'
+    <if test="deployVo.targetIp != null and deployVo.targetIp != ''">
+      , TARGET_IP = #{deployVo.targetIp}
+    </if>
+    <if test="deployVo.targetUser != null and deployVo.targetUser != ''">
+      , TARGET_USER = #{deployVo.targetUser}
+    </if>
+    <if test="deployVo.targetPwd != null and deployVo.targetPwd != ''">
+      , TARGET_PWD = #{deployVo.targetPwd}
+    </if>
+    <if test="deployVo.targetUrl != null and deployVo.targetUrl != ''">
+      , TARGET_URL = #{deployVo.targetUrl}
+    </if>
+  </update>
+
+</mapper>

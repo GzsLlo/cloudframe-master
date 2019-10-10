@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.cmc.mapper.ProductMapper">
+
+
+    <select id="selectProduct" resultType="com.ai.cloudframe.provider.api.sys.model.dto.ProductDto" parameterType="Map">
+        SELECT a.PRODUCT_ID,PRODUCT_NAME,a.INTRODUCE_PRODUCT_ID,a.INTRODUCE_PRODUCT_NAME,a.INTRODUCE_PRODUCT_TYPE,a.CHARGE_TYPE,a.PRODUCT_PRICE,a.START_DATE,a.END_DATE,RELEASE_DATE,b.INTRODUCE_PRODUCT_DATAIL,b.ATOM_URL,b.VERSION_NUMBER FROM tf_asiainfo_product a
+        LEFT JOIN tf_asiainfo_introduce_product b ON a.INTRODUCE_PRODUCT_ID = b.INTRODUCE_PRODUCT_ID
+        WHERE sysdate <![CDATA[ >= ]]>  a.START_DATE AND sysdate <![CDATA[ <= ]]>  a.END_DATE
+        <if test="map.introduceProductType!=null and map.introduceProductType!='' ">
+            AND a.INTRODUCE_PRODUCT_TYPE = #{map.introduceProductType}
+        </if>
+        <if test="map.productName!=null and map.productName!='' ">
+            AND PRODUCT_NAME like '%'||#{map.productName}||'%'
+        </if>
+        <if test="map.ORDER_COLUMN!=null and map.ORDER_TYPE!=null">
+            ORDER BY
+            <if test="map.ORDER_COLUMN!=null and map.ORDER_COLUMN=='RELEASE_DATE'">
+                RELEASE_DATE
+            </if>
+            <if test="map.ORDER_TYPE!=null and map.ORDER_TYPE=='ascending'">
+                ASC
+            </if>
+            <if test="map.ORDER_TYPE!=null and map.ORDER_TYPE=='descending'">
+                DESC
+            </if>
+        </if>
+    </select>
+
+    <select id="selectOneProduct" resultType="com.ai.cloudframe.provider.cmc.entity.Product" parameterType="Map">
+        SELECT PRODUCT_ID,PRODUCT_NAME,START_DATE,END_DATE FROM tf_asiainfo_product
+        WHERE sysdate <![CDATA[ >= ]]>  START_DATE AND sysdate <![CDATA[ <= ]]>  END_DATE
+        <if test="map.productId!=null and map.productId!='' ">
+            AND PRODUCT_ID = #{map.productId}
+        </if>
+    </select>
+
+
+    <insert id="insertProduct" parameterType="Map">
+INSERT INTO cmc_dev.tf_asiainfo_product(PRODUCT_ID, PRODUCT_NAME, PRODUCT_TYPE,
+        <if test="map.abilityId!=null and map.abilityId!='' ">
+            ABILITY_ID,
+        </if>
+        <if test="map.application!=null and map.application!='' ">
+            APPLICATION_ID,
+        </if>
+POSTAGE, EXAMINE_STATUS, MUTEX_PRODUCT_ID, START_DATE, END_DATE)
+VALUES (#{map.productId}, #{map.productName}, #{map.productType},
+        <if test="map.abilityId!=null and map.abilityId!='' ">
+            #{map.abilityId},
+        </if>
+        <if test="map.application!=null and map.application!='' ">
+            #{map.application},
+        </if>
+        #{map.postage},  #{map.examineStatus}, #{map.mutexProductId}, #{map.startDate}, #{map.endDate} );
+    </insert>
+
+
+
+    <update id="productsStatusUpdate">
+        UPDATE tf_asiainfo_product SET EXAMINE_STATUS = #{examineStatus},PRODUCT_PRICE = #{productPrice},EXAMINE_USER_ID = #{examineUserId},EXAMINE_DATE = #{examineDate},EXAMINE_DETAIL = #{examineDetail}
+        WHERE PRODUCT_ID = #{productId} AND sysdate <![CDATA[ >= ]]>  START_DATE AND sysdate <![CDATA[ <= ]]>  END_DATE
+
+    </update>
+
+    <select id="prodUniIntroQueryTable" resultType="com.ai.cloudframe.provider.api.sys.model.vo.ProdIntroProdVo" parameterType="com.ai.cloudframe.provider.api.sys.model.vo.ProdIntroProdVo">
+SELECT
+	tp.PRODUCT_ID,
+	tp.PRODUCT_NAME,
+	tp.INTRODUCE_PRODUCT_ID,
+	tp.INTRODUCE_PRODUCT_NAME,
+	tp.INTRODUCE_PRODUCT_TYPE,
+	tp.CHARGE_TYPE,
+	tp.PRODUCT_PRICE,
+    tp.PRODUCT_PRICE as PRODUCT_SALE_PRICE,
+	tip.INTRODUCE_PRODUCT_DATAIL,
+	tip.VERSION_NUMBER,
+	tip.RELEASE_DATE,
+	tip.ATOM_URL,
+	'某信科技' AS BUSINESS
+FROM
+	tf_asiainfo_product tp,
+	tf_asiainfo_introduce_product tip
+WHERE
+	tp.INTRODUCE_PRODUCT_ID = tip.INTRODUCE_PRODUCT_ID
+        <if test="prodIntroProdVo.prodNameCodeSearch!=''  and prodIntroProdVo.prodNameCodeSearch!= null">
+            AND (tp.PRODUCT_ID LIKE  '%'||#{prodIntroProdVo.prodNameCodeSearch}||'%' or tp.PRODUCT_NAME LIKE '%'||#{prodIntroProdVo.prodNameCodeSearch}||'%')
+        </if>
+        <if test="prodIntroProdVo.introduceProductType!=''  and prodIntroProdVo.introduceProductType!= null">
+            AND tp.INTRODUCE_PRODUCT_TYPE = #{prodIntroProdVo.introduceProductType}
+        </if>
+        <if test="prodIntroProdVo.releaseDateStr!='' and prodIntroProdVo.releaseDateStr!= null ">
+            AND tip.RELEASE_DATE LIKE '%'||#{prodIntroProdVo.releaseDateStr}||'%'
+        </if>
+        <if test="prodIntroProdVo.productId!=null">
+            AND tp.PRODUCT_ID = #{prodIntroProdVo.productId}
+        </if>
+    </select>
+
+
+
+
+    <select id="selectGoodProductSettle" resultType="com.ai.cloudframe.provider.api.sys.model.dto.GoodProductSettleDto" parameterType="Map">
+        SELECT a.GOOD_ID,GOOD_NAME,GOOD_TYPE,b.GOOD_PRODUCT_PRICE,c.PRODUCT_ID,PRODUCT_NAME,PRODUCT_PRICE,CHARGE_TYPE
+        FROM tf_asiainfo_goods a
+        LEFT JOIN tf_asiainfo_product_good b on a.GOOD_ID = b.GOOD_ID
+        LEFT JOIN tf_asiainfo_product  c on b.PRODUCT_ID = c.PRODUCT_ID
+        WHERE sysdate <![CDATA[ >= ]]>  a.START_DATE AND sysdate <![CDATA[ <= ]]>  a.END_DATE
+        AND sysdate <![CDATA[ >= ]]>  b.START_DATE AND sysdate <![CDATA[ <= ]]>  b.END_DATE
+        AND sysdate <![CDATA[ >= ]]>  c.START_DATE AND sysdate <![CDATA[ <= ]]>  c.END_DATE
+        <if test="map.goodId!=null and map.goodId!='' ">
+            AND a.GOOD_ID = #{map.goodId}
+        </if>
+        <if test="map.goodType!=null and map.goodType!='' ">
+            AND GOOD_TYPE = #{map.goodType}
+        </if>
+        <if test="map.goodName!=null and map.goodName!='' ">
+            AND GOOD_NAME like '%'||#{map.goodName}||'%'
+        </if>
+    </select>
+
+
+
+    <select id="selectGoodProductSettleEffect" resultType="com.ai.cloudframe.provider.api.sys.model.dto.GoodProductSettleDto" parameterType="Map">
+        SELECT a.GOOD_ID,c.PRODUCT_ID,RULE_ID,d.START_DATE,d.END_DATE  FROM tf_asiainfo_goods a
+        LEFT JOIN tf_asiainfo_product_good b on a.GOOD_ID = b.GOOD_ID
+        LEFT JOIN tf_asiainfo_product  c on b.PRODUCT_ID = c.PRODUCT_ID
+        LEFT JOIN tf_asiainfo_settle_rule d on a.GOOD_ID = d.GOOD_ID AND c.PRODUCT_ID = d.PRODUCT_ID
+        WHERE sysdate <![CDATA[ >= ]]>  a.START_DATE AND sysdate <![CDATA[ <= ]]>  a.END_DATE
+        AND sysdate <![CDATA[ >= ]]>  b.START_DATE AND sysdate <![CDATA[ <= ]]>  b.END_DATE
+        AND sysdate <![CDATA[ >= ]]>  c.START_DATE AND sysdate <![CDATA[ <= ]]>  c.END_DATE
+        AND sysdate <![CDATA[ >= ]]>  d.START_DATE AND sysdate <![CDATA[ <= ]]>  d.END_DATE
+        AND a.GOOD_ID = #{map.goodId}
+        AND c.PRODUCT_ID = #{map.productId}
+    </select>
+
+
+
+</mapper>

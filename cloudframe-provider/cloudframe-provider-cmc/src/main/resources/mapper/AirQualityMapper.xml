@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.cmc.mapper.AirQualityMapper">
+
+  <select id="getDeviceData" resultType="com.ai.cloudframe.provider.api.sys.model.vo.AirQualityVo"
+          parameterType="Map">
+    SELECT
+      taaq.AIR_ID,
+      taaq.DEVICE_ID,
+      taaq.CITY_CODE,
+      taaq.AREA_CODE,
+      taaq.AREA_NAME,
+      taaq.COLLECT_DATE,
+      taaq.PM,
+			tac.CITY_NAME
+    FROM
+      tf_asiainfo_air_quality taaq
+		LEFT JOIN
+			tf_asiainfo_city tac on taaq.CITY_CODE = tac.CITY_CODE
+  </select>
+
+
+</mapper>

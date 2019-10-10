@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.sys.mapper.PermissionMapper">
+
+  <select id="getUserPerms" resultType="com.ai.cloudframe.provider.api.sys.model.dto.PermissionDto">
+        SELECT P.PERMISSION_CODE PERMISSION_CODE,
+           P.PERMISSION_NAME PERMISSION_NAME,
+           p.PERMISSION_EXPLAIN PERMISSION_EXPLAIN,
+           p.PERMISSION_TYPE PERMISSION_TYPE,
+           p.PERMISSION_ATTR PERMISSION_ATTR,
+           p.START_DATE START_DATE,
+           p.END_DATE END_DATE
+    FROM   TD_ASIAINFO_USER A,
+           TD_ASIAINFO_USER_ROLE B,
+           TD_ASIAINFO_ROLE C,
+           TD_ASIAINFO_ROLEPERMISSION R,
+           TD_ASIAINFO_PERMISSION P
+    WHERE  B.ROLE_CODE = C.ROLE_CODE
+       AND A.USER_NAME = B.USER_NAME
+       AND A.USER_NAME = #{username}
+       AND R.ROLE_CODE = B.ROLE_CODE
+       AND P.PERMISSION_CODE = R.PERMISSION_CODE
+       AND P.PERMISSION_TYPE = '0'
+       AND A.END_DATE &gt;= sysdate
+       AND A.START_DATE &lt;= sysdate
+       AND B.END_DATE &gt;= sysdate
+       AND B.START_DATE &lt;= sysdate
+       AND C.END_DATE &gt;= sysdate
+       AND C.START_DATE &lt;= sysdate
+       AND R.END_DATE &gt;= sysdate
+       AND R.START_DATE &lt;= sysdate
+       AND P.END_DATE &gt;= sysdate
+       AND P.START_DATE &lt;= sysdate
+  </select>
+    
+    <select id="getMenuPermission" resultType="com.ai.cloudframe.provider.api.sys.model.dto.MenuPermissionDto">
+        SELECT A.PERMISSION_CODE,A.PERMISSION_NAME PERMISSION_NAME,
+        B.MODE_PATH,B.MODE_COMPONENT,B.MODE_ATTR,
+        C.MENU_ID,C.PARENT_MENU_ID
+        FROM td_asiainfo_permission A
+        LEFT JOIN td_asiainfo_mode B ON A.PERMISSION_CODE=B.PERMISSION_CODE
+        LEFT JOIN td_asiainfo_systemmenu C ON B.MODE_CODE=C.MODE_CODE
+        LEFT JOIN td_asiainfo_rolepermission D ON A.PERMISSION_CODE=D.PERMISSION_CODE AND A.PERMISSION_TYPE=D.PERMISSION_TYPE
+        LEFT JOIN td_asiainfo_user_role E ON E.ROLE_CODE = D.ROLE_CODE
+        LEFT JOIN td_asiainfo_role F ON E.ROLE_CODE = F.ROLE_CODE
+        WHERE A.PERMISSION_TYPE='0' AND B.MODE_TYPE='0' AND C.SUBSYS_CODE='IOT'
+        AND sysdate BETWEEN A.START_DATE AND A.END_DATE
+        AND sysdate BETWEEN B.START_DATE AND B.END_DATE
+        AND sysdate BETWEEN C.START_DATE AND C.END_DATE
+        AND sysdate BETWEEN D.START_DATE AND D.END_DATE
+        AND sysdate BETWEEN E.START_DATE AND E.END_DATE
+        AND E.USER_NAME=#{username}
+        ORDER BY C.CATEGORY,C.ITEM_ORDER;
+    </select>
+
+    <select id="getPermissionList" resultType="com.ai.cloudframe.provider.api.sys.model.dto.PermissionListDto">
+        SELECT A.PERMISSION_CODE,A.PERMISSION_NAME PERMISSION_NAME,G.MENU_ID,G.BUTTON_ID,G.BUTTON_TITLE
+        FROM  td_asiainfo_rolepermission D
+        LEFT JOIN td_asiainfo_permission A ON A.PERMISSION_CODE=D.PERMISSION_CODE AND A.PERMISSION_TYPE=D.PERMISSION_TYPE
+        LEFT JOIN td_asiainfo_mode B ON A.PERMISSION_CODE=B.PERMISSION_CODE
+        LEFT JOIN td_asiainfo_user_role E ON E.ROLE_CODE = D.ROLE_CODE
+        LEFT JOIN td_asiainfo_role F ON E.ROLE_CODE = F.ROLE_CODE
+        LEFT JOIN td_asiainfo_menu_element G ON  G.MODE_CODE = B.MODE_CODE
+        WHERE A.PERMISSION_TYPE='1' AND B.MODE_TYPE='1'
+        AND sysdate BETWEEN A.START_DATE AND A.END_DATE
+        AND sysdate BETWEEN B.START_DATE AND B.END_DATE
+        AND sysdate BETWEEN D.START_DATE AND D.END_DATE
+        AND sysdate BETWEEN E.START_DATE AND E.END_DATE
+        AND sysdate BETWEEN F.START_DATE AND F.END_DATE
+        AND sysdate BETWEEN G.START_DATE AND G.END_DATE
+        AND E.USER_NAME=#{username}
+
+    </select>
+
+
+</mapper>

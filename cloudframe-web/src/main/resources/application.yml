@@ -1,0 +1,36 @@
+server:
+  port: 8081
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: @pom.artifactId@
+  cloud:
+    sentinel:
+      transport:
+        dashboard: localhost:8082
+
+cloudframe:
+  restPath: cloudframe
+  allowedOrigins: http://localhost:9520,http://localhost:9510,http://localhost:8099,http://localhost:9660
+  web:
+    salt: intelligepension
+  microservice:
+    sys: cloudframe-provider-sys
+    param: cloudframe-provider-param
+    cmc: cloudframe-provider-cmc
+    application: cloudframe-provider-application
+  shiroFilter:
+    '[/images/**]': anon
+    '[/favicon.ico]': anon
+    '[/static/**]': anon
+    '[/cloudframe/login]': anon
+    '[/cloudframe/logout]': anon
+    '[/cloudframe/queryTable/**]': anon
+    '[/cloudframe/**]': anon
+#  redisProperties:
+#    host: 121.42.237.56:6000,121.42.237.56:6001,121.42.237.56:6002
+#    timeout: 2000
+#    password: R0D1S^i121o
+#    sessionId: jsessionId

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.application.mapper.AirMonitorMapper">
+
+  <select id="getAirMonitorInfo" resultType="com.ai.cloudframe.provider.api.sys.model.vo.AirMonitorVo"
+          parameterType="Map">
+    SELECT
+    AIR_MONITOR_ID,
+    RULE_NAME,
+    MONITOR_TARGET,
+    DIMENSION,
+    START_TIME,
+    END_TIME,
+    REGION,
+    THRESHOLD_TYPE,
+    THRESHOLD,
+    ALARM_CODE,
+    ALARM_TYPE,
+    START_DATE,
+    END_DATE
+    FROM
+    tf_asiainfo_air_monitor
+    WHERE
+    1 = 1
+    <if test = "param.airMonitorId != null and param.airMonitorId != ''">
+      AND tam.AIR_MONITOR_ID = #{param.airMonitorId}
+    </if>
+  </select>
+
+</mapper>

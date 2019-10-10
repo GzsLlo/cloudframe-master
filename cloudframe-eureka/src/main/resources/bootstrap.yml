@@ -1,0 +1,13 @@
+eureka:
+  environment: dev
+  datacenter: nanjing
+  server:
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 4000
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://root:root@${eureka.instance.hostname}:${server.port}/eureka

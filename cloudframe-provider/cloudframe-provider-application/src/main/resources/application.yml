@@ -1,0 +1,51 @@
+server:
+  port: 8034
+
+spring:
+  application:
+    name: @pom.artifactId@
+  datasource:
+    url: jdbc:oracle:thin:@10.20.16.80:1521:ngcrm
+#    url: jdbc:mysql://127.0.0.1:3306/cen_dev?characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false
+    username: cmc
+    password: cmc
+#    username: root
+#    password: 123456
+
+    driver-class-name: oracle.jdbc.OracleDriver
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat,wall,log4j
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    useGlobalDataSourceStat: true
+
+  cloud:
+    sentinel:
+      transport:
+        dashboard: localhost:8082
+
+#mybatis
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**Mapper.xml
+  typeAliasesPackage: com.ai.cloudframe.provider.application.entity
+  global-config:
+    column-underline: false
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com.ai.cloudframe.provider.application : DEBUG

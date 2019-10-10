@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.cmc.mapper.ProductGoodMapper">
+    <select id="getInfoByGoodId" resultType="com.ai.cloudframe.provider.api.sys.model.dto.OrderDto">
+        SELECT
+		A.GOOD_ID,
+	A.PRODUCT_ID,
+	A.GOOD_PRODUCT_PRICE,
+	B.PRODUCT_ID,
+  B.PRODUCT_NAME,
+  B.INTRODUCE_PRODUCT_ID,
+  B.INTRODUCE_PRODUCT_NAME,
+  B.INTRODUCE_PRODUCT_TYPE,
+  B.CHARGE_TYPE,
+  B.PRODUCT_PRICE
+FROM
+	tf_asiainfo_product_good A
+LEFT JOIN tf_asiainfo_product B
+ON A.PRODUCT_ID = B.PRODUCT_ID
+WHERE
+	A.GOOD_ID = #{username}
+AND A.START_DATE &lt;= sysdate
+AND A.END_DATE >= sysdate
+AND B.START_DATE &lt;= sysdate
+AND B.END_DATE >= sysdate
+    </select>
+
+
+
+
+</mapper>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.cmc.mapper.ApiMapper">
+
+    <select id="apiQuery" resultType="com.ai.cloudframe.provider.api.sys.model.dto.ApiAppDto" parameterType="Map">
+        SELECT API_ID AUTOID, API_NAME AUTONAME, ABILITY_LABEL AUTOTAG, API_URL URL,CREATE_USER_ID
+        CREATEPERSON,START_DATE CREATETIME ,QUOTE_STATUS INTRODUCTION,"应用类" as LABEL
+        FROM tf_asiainfo_api
+        WHERE sysdate <![CDATA[ >= ]]>  START_DATE AND sysdate <![CDATA[ <= ]]>  END_DATE
+        <if test="map.createPerson!=null and map.createPerson!='' ">
+            AND CREATE_USER_ID = #{map.createPerson}
+        </if>
+        <if test="map.autoName!=null and map.autoName!='' ">
+            AND API_NAME like '%'||#{map.apiName}||'%'
+        </if>
+        <if test="map.ORDER_COLUMN!=null and map.ORDER_TYPE!=null">
+            ORDER BY
+            <if test="map.ORDER_COLUMN!=null and map.ORDER_COLUMN=='START_DATE'">
+                START_DATE
+            </if>
+            <if test="map.ORDER_TYPE!=null and map.ORDER_TYPE=='ascending'">
+                ASC
+            </if>
+            <if test="map.ORDER_TYPE!=null and map.ORDER_TYPE=='descending'">
+                DESC
+            </if>
+        </if>
+    </select>
+
+
+    <select id="apiAppQuery" resultType="com.ai.cloudframe.provider.api.sys.model.dto.ApiAppDto" parameterType="Map">
+        SELECT T.AUTOID ,T.AUTONAME,T.AUTOTAG,T.URL,T.CREATEPERSON,T.CREATETIME,T.INTRODUCTION,T.LABEL FROM (
+        SELECT APPLICATION_ID AUTOID,APPLICATION_NAME AUTONAME,APPLICATION_LABEL AUTOTAG,APPLICATION_URL
+        URL,CREATE_USER_ID CREATEPERSON,START_DATE CREATETIME ,QUOTE_STATUS INTRODUCTION, '应用类' as LABEL
+        FROM tf_asiainfo_application
+        WHERE sysdate <![CDATA[ >= ]]>  START_DATE AND sysdate <![CDATA[ <= ]]>  END_DATE
+        <if test="map.createPerson!=null and map.createPerson!='' ">
+            AND CREATE_USER_ID = #{map.createPerson}
+        </if>
+        UNION
+        SELECT API_ID AUTOID, API_NAME AUTONAME, ABILITY_LABEL AUTOTAG, API_URL URL,CREATE_USER_ID
+        CREATEPERSON,CREATE_TIME CREATETIME ,QUOTE_STATUS INTRODUCTION,'能力类' as LABEL
+        FROM tf_asiainfo_api
+        WHERE sysdate <![CDATA[ >= ]]>  START_DATE AND sysdate <![CDATA[ <= ]]>  END_DATE
+        <if test="map.createPerson!=null and map.createPerson!='' ">
+            AND CREATE_USER_ID = #{map.createPerson}
+        </if>
+        ) T WHERE 1=1
+        <if test="map.label!=null and map.label!='' ">
+            AND T.LABEL = #{map.label}
+        </if>
+        <if test="map.autoName!=null and map.autoName!='' ">
+            AND T.AUTONAME like '%'||#{map.autoName}||'%'
+        </if>
+        <if test="map.ORDER_COLUMN!=null and map.ORDER_TYPE!=null">
+            ORDER BY
+            <if test="map.ORDER_COLUMN!=null and map.ORDER_COLUMN=='CREATETIME'">
+                CREATETIME
+            </if>
+            <if test="map.ORDER_TYPE!=null and map.ORDER_TYPE=='ascending'">
+                ASC
+            </if>
+            <if test="map.ORDER_TYPE!=null and map.ORDER_TYPE=='descending'">
+                DESC
+            </if>
+        </if>
+    </select>
+
+
+    <update id="updateByApiId" parameterType="Map">
+        UPDATE tf_asiainfo_api SET QUOTE_STATUS = #{map.status}
+        WHERE sysdate <![CDATA[ >= ]]>  START_DATE AND sysdate <![CDATA[ <= ]]>  END_DATE
+        <if test="map.autoId!=null and map.autoId!='' ">
+            AND API_ID = #{map.autoId}
+        </if>
+    </update>
+
+    <update id="updateApiById" parameterType="com.ai.cloudframe.provider.cmc.entity.Api">
+        UPDATE tf_asiainfo_api
+        <trim prefix="set" suffixOverrides=",">
+            <if test="api.apiType != null and api.apiType != ''">
+                API_TYPE = #{api.apiType},
+            </if>
+            <if test="api.abilityLabel != null and api.abilityLabel != ''">
+                ABILITY_LABEL = #{api.abilityLabel},
+            </if>
+            <if test="api.apiName != null and api.apiName != ''">
+                API_NAME = #{api.apiName},
+            </if>
+            <if test="api.quoteStatus != null and api.quoteStatus != ''">
+                QUOTE_STATUS = #{api.quoteStatus},
+            </if>
+            <if test="api.requestType != null and api.requestType != ''">
+                REQUEST_TYPE = #{api.requestType},
+            </if>
+            <if test="api.accessAgree != null and api.accessAgree != ''">
+                ACCESS_AGREE = #{api.accessAgree},
+            </if>
+            <if test="api.accessUrl != null and api.accessUrl != ''">
+                ACCESS_URL = #{api.accessUrl},
+            </if>
+            <if test="api.accessDataFormat != null and api.accessDataFormat != ''">
+                ACCESS_DATA_FORMAT = #{api.accessDataFormat}
+            </if>
+            <if test="api.apiAgree != null and api.apiAgree != ''">
+                API_AGREE = #{api.apiAgree},
+            </if>
+            <if test="api.apiUrl != null and api.apiUrl != ''">
+                API_URL = #{api.apiUrl},
+            </if>
+            <if test="api.dataFormat != null and api.dataFormat != ''">
+                DATA_FORMAT = #{api.dataFormat},
+            </if>
+            <if test="api.xmlHeader != null and api.xmlHeader != ''">
+                XML_HEAD = #{api.xmlHeader},
+            </if>
+            <if test="api.apiDetail != null and api.apiDetail != ''">
+                API_DETAIL = #{api.apiDetail},
+            </if>
+            <if test="api.endDate != null ">
+                END_DATE = #{api.endDate},
+            </if>
+            <if test="api.startDate != null ">
+                START_DATE = #{api.startDate},
+            </if>
+            <if test="api.apiStatus != null ">
+                API_STATUS = #{api.apiStatus},
+            </if>
+        </trim>
+        WHERE API_ID = #{api.apiId}
+    </update>
+
+
+</mapper>

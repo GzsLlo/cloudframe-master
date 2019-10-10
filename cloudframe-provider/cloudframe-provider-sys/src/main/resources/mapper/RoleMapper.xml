@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.sys.mapper.RoleMapper">
+
+  <select id="getUserRolesByName" resultType="com.ai.cloudframe.provider.api.sys.model.dto.RoleDto">
+    SELECT
+    C.ROLE_CODE as ROLE_CODE,
+    B.ROLE_NAME as ROLE_NAME,
+    B.ROLE_EXPLAIN as ROLE_EXPLAIN,
+    B.ROLE_TYPE as ROLE_TYPE,
+    B.START_DATE as START_DATE,
+    B.END_DATE as END_DATE
+    FROM
+    TD_ASIAINFO_USER A,
+    TD_ASIAINFO_ROLE B,
+    TD_ASIAINFO_USER_ROLE C
+    WHERE
+    A.USER_NAME = C.USER_NAME
+    AND B.ROLE_CODE = C.ROLE_CODE
+    AND A.END_DATE &gt;= sysdate
+    AND A.START_DATE &lt;= sysdate
+    AND B.END_DATE &gt;= sysdate
+    AND B.START_DATE &lt;= sysdate
+    AND C.END_DATE &gt;= sysdate
+    AND C.START_DATE &lt;= sysdate
+    AND A.USER_NAME = #{username}
+  </select>
+
+
+</mapper>

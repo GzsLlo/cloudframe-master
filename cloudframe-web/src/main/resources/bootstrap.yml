@@ -1,0 +1,42 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://root:root@localhost:8761/eureka/
+    registry-fetch-interval-seconds: 5
+    healthcheck:
+      enabled: true
+  instance:
+    lease-expiration-duration-in-seconds: 30
+    lease-renewal-interval-in-seconds: 10
+    #instance-id: ${spring.application.name}:${server.port}
+
+swagger:
+  enabled: true
+
+feign:
+  httpclient:
+    enabled: true
+  sentinel:
+    enabled: true
+  client:
+    config:
+      default:
+        connect-timeout: 2000000
+        read-timeout: 2000000
+ribbon:
+  eager-load:
+    enabled: true
+    clients:
+      - cloudframe-provider-param
+      - cloudframe-provider-cmc
+      - cloudframe-provider-sys
+      - cloudframe-provider-application
+    ReadTimeout: 2000000
+    ConnectTimeout: 2000000
+app:
+  id: cloudframe-web
+apollo:
+  meta: http://localhost:8080
+  bootstrap:
+    enabled: true
+    namespaces: application,TEST1.common-web

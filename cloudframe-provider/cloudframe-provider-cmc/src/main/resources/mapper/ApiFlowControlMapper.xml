@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.cmc.mapper.ApiFlowControlMapper">
+    <update id="updateApiFlowById" parameterType="com.ai.cloudframe.provider.cmc.entity.ApiFlowControl">
+        UPDATE tf_asiainfo_api_flow_control
+        <trim prefix="set" suffixOverrides=",">
+            <if test="control.flowControlType != null ">
+                FLOW_CONTROL_TYPE = #{control.flowControlType},
+            </if>
+            <if test="control.abilityName != null ">
+                ABILITY_NAME = #{control.abilityName},
+            </if>
+            <if test="control.apiId != null ">
+                API_ID = #{control.apiId},
+            </if>
+            <if test="control.channelId != null ">
+                CHANNEL_ID = #{control.channelId},
+            </if>
+            <if test="control.limitUnitTime != null ">
+                LIMIT_UNIT_TIME = #{control.limitUnitTime},
+            </if>
+            <if test="control.timeInterval != null ">
+                TIME_INTERVAL = #{control.timeInterval},
+            </if>
+            <if test="control.limitCount != null ">
+                LIMIT_COUNT = #{control.limitCount},
+            </if>
+            <if test="control.comment != null ">
+                COMMENT = #{control.comment},
+            </if>
+            <if test="control.endTime != null ">
+                END_TIME = #{control.endTime},
+            </if>
+        </trim>
+        WHERE CONTROL_ID = #{control.controlId}
+    </update>
+</mapper>

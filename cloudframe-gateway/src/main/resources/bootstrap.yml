@@ -1,0 +1,7 @@
+app:
+  id: cloudframe-gateway
+apollo:
+  meta: http://localhost:8080
+  bootstrap:
+    enabled: true
+    namespaces: application,common

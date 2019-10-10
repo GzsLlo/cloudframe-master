@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.cmc.mapper.GoodsMapper">
+
+<update id="goodsStatusUpdate" parameterType="com.ai.cloudframe.provider.api.sys.model.dto.GoodsDto">
+UPDATE tf_asiainfo_goods
+SET EXAMINE_STATUS = #{goodsDto.examineStatus},EXAMINE_USER_ID = #{goodsDto.examineUserId},EXAMINE_DATE = #{goodsDto.examineDate},EXAMINE_DETAIL = #{goodsDto.examineDetail,jdbcType=VARCHAR}
+WHERE
+	GOOD_ID = #{goodsDto.goodId}
+</update>
+
+
+<update id="goodsUnderUpdate" parameterType="com.ai.cloudframe.provider.api.sys.model.dto.GoodsDto">
+UPDATE tf_asiainfo_goods
+SET EXAMINE_STATUS = #{goodsDto.examineStatus},UNDER_DATE=#{goodsDto.underDate}
+WHERE
+	GOOD_ID = #{goodsDto.goodId}
+</update>
+
+
+	<update id="goodsReleaseUpdate" parameterType="com.ai.cloudframe.provider.api.sys.model.dto.GoodsDto">
+UPDATE tf_asiainfo_goods
+SET EXAMINE_STATUS = #{goodsDto.examineStatus},RELEASE_DATE=#{goodsDto.releaseDate},CHANNEL_ID=#{goodsDto.channelId}
+WHERE
+	GOOD_ID = #{goodsDto.goodId}
+</update>
+
+	<select id="goodInfoqueryTable"  resultType="com.ai.cloudframe.provider.api.sys.model.vo.GoodsVo"  parameterType="com.ai.cloudframe.provider.api.sys.model.vo.GoodsVo">
+		SELECT
+		GOOD_ID,
+		GOOD_NAME,
+		GOOD_TYPE,
+		EXAMINE_STATUS,
+		GOOD_DETAIL,
+		EXAMINE_USER_ID,
+		EXAMINE_DATE,
+		EXAMINE_DETAIL,
+		IS_EXPERIENCE_PRODUCT,
+		ORDER_TYPE,
+		RELEASE_DATE,
+		UNDER_DATE,
+		CREATE_USER_ID,
+		START_DATE,
+		END_DATE,
+		CHANNEL_ID
+		from tf_asiainfo_goods
+WHERE
+	1=1
+		<if test="goodsVo.goodId!=null and goodsVo.goodId!=''">
+			AND GOOD_ID = #{goodsVo.goodId}
+		</if>
+
+		<if test="goodsVo.goodName!=null and goodsVo.goodName!=''">
+			AND GOOD_NAME LIKE '%'||#{goodsVo.goodName}||'%'
+		</if>
+
+		<if test="goodsVo.goodType!=null and goodsVo.goodType!=''">
+			AND GOOD_TYPE = #{goodsVo.goodType}
+		</if>
+
+		<if test="goodsVo.examineStatus!=null and goodsVo.examineStatus!=''">
+			AND EXAMINE_STATUS = #{goodsVo.examineStatus}
+		</if>
+		<if test="goodsVo.ifOrder!=null and goodsVo.ifOrder!=''">
+			and sysdate <![CDATA[ >= ]]> START_DATE AND sysdate <![CDATA[ <= ]]>  END_DATE
+		</if>
+	</select>
+
+
+	<select id="goodProdInfoquery"  resultType="com.ai.cloudframe.provider.api.sys.model.vo.GoodsProductVo">
+SELECT
+	tpg.GOOD_ID,
+	tp.PRODUCT_ID,
+	tp.PRODUCT_NAME,
+	tip.INTRODUCE_PRODUCT_DATAIL,
+	tp.PRODUCT_PRICE,
+	tpg.GOOD_PRODUCT_PRICE,
+	tp.INTRODUCE_PRODUCT_TYPE,
+	tp.CHARGE_TYPE
+FROM
+	tf_asiainfo_product_good  tpg
+LEFT JOIN
+	tf_asiainfo_product  tp
+ON	tpg.PRODUCT_ID = tp.PRODUCT_ID
+LEFT JOIN
+	tf_asiainfo_introduce_product  tip
+ON tp.INTRODUCE_PRODUCT_ID = tip.INTRODUCE_PRODUCT_ID
+		<if test="goodId!=null and goodId!=''">
+where tpg.GOOD_ID = #{goodId}
+		</if>
+	</select>
+
+</mapper>

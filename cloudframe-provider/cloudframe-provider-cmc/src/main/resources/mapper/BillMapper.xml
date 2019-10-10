@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.cmc.mapper.BillMapper">
+    <select id="queryTableHealth" resultType="com.ai.cloudframe.provider.api.sys.model.vo.ChargeOffVo"
+            parameterType="Map">
+        SELECT
+        A.MEDICAL_REPORT_ID,
+        A.GROUP_ID,
+        A.ORGAN_ID,
+        A.ELDER_ID,
+        A.HEALTH_LEVEL,
+        A.MEDICAL_REPORT_STATE,
+        A.MEDICAL_ORGAN,
+        A.ABNORMAL_SITUATION,
+        A.REPORT_ENCLOSURE,
+        A.EXAM_DATE,
+        A.CREATE_TIME,
+        A.CREATE_BY,
+        A.UPDATE_TIME,
+        A.UPDATE_BY,
+        B.GENDER,
+        B.ELDER_NAME,
+        B.HEAD_URL,
+        B.FILE_NUMBER,
+        C.BED_ID
+        FROM tf_f_elder_medical A
+        LEFT JOIN tf_f_elder B
+        ON A.ELDER_ID =B.ELDER_ID
+        LEFT JOIN tf_f_elder_bed C
+        ON A.ELDER_ID =C.ELDER_ID
+        WHERE 1=1
+        AND B.STATE = '2'
+        AND A.ORGAN_ID = #{selectParms.ORGAN_ID}
+        AND A.GROUP_ID = #{selectParms.GROUP_ID}
+        <if test="selectParms.HEALTH_LEVEL!=null">
+            AND A.HEALTH_LEVEL in
+            <foreach item="item" index="index" collection="selectParms.HEALTH_LEVEL" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="selectParms.MEDICAL_REPORT_STATE!=null">
+            AND A.MEDICAL_REPORT_STATE in
+            <foreach item="item" index="index" collection="selectParms.MEDICAL_REPORT_STATE" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="selectParms.GENDER!=null">
+            AND B.GENDER in
+            <foreach item="item" index="index" collection="selectParms.GENDER" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="selectParms.EXAM_DATE!=null">
+            AND A.EXAM_DATE > #{selectParms.EXAM_DATE}
+        </if>
+        <if test="selectParms.EXAM_DATE_END!=null">
+            AND #{selectParms.EXAM_DATE_END} > A.EXAM_DATE
+        </if>
+        <if test="selectParms.vagueParam!=null">
+            AND (B.ELDER_NAME LIKE '%'||#{selectParms.vagueParam}||'%' OR C.BED_ID  LIKE '%'||#{selectParms.vagueParam}||'%'
+            OR A.MEDICAL_ORGAN LIKE '%'||#{selectParms.vagueParam}||'%')
+        </if>
+        <if test="selectParms.ORDER_COLUMN!=null and selectParms.ORDER_TYPE!=null">
+            ORDER BY
+            <if test="selectParms.ORDER_COLUMN!=null and selectParms.ORDER_COLUMN=='EXAM_DATE'">
+                EXAM_DATE
+            </if>
+            <if test="selectParms.ORDER_TYPE!=null and selectParms.ORDER_TYPE=='ascending'">
+                ASC
+            </if>
+            <if test="selectParms.ORDER_TYPE!=null and selectParms.ORDER_TYPE=='descending'">
+                DESC
+            </if>
+        </if>
+
+    </select>
+</mapper>

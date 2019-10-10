@@ -1,0 +1,18 @@
+gateway-web:
+  uri: lb://cloudframe-web
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://root:root@localhost:8761/eureka/
+server:
+  port: 8099
+spring:
+  application:
+    name: @pom.artifactId@
+  cloud:
+    gateway:
+      routes:
+        - id: service-web
+          uri: lb://cloudframe-web
+          predicates:
+            - Path=/cloudframe/**

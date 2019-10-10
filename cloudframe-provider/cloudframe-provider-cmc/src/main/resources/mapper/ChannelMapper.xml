@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.cmc.mapper.ChannelMapper">
+
+    <select id="channelInfoqueryTable" resultType="com.ai.cloudframe.provider.api.sys.model.dto.ChannelDto">
+SELECT
+	CHANNEL_ID,
+	CHANNEL_NAME,
+	CONTACTS,
+	CONTACT_PHONE
+FROM
+	tf_asiainfo_channel
+where
+ 1=1
+        <if test="channelDto.channelName!=null and channelDto.channelName!=''">
+            AND CHANNEL_NAME LIKE '%'||#{channelDto.channelName}||'%'
+        </if>
+    </select>
+
+    <select id="getTableByChannelId" resultType="com.ai.cloudframe.provider.api.sys.model.vo.ChannelVo">
+        SELECT
+        A.CHANNEL_ID,
+        A.CHANNEL_NAME,
+        A.API_ID,
+        A.TOKEN,
+        A.START_DATE,
+        A.END_DATE,
+        B.API_TYPE,
+        B.ABILITY_LABEL,
+        B.API_NAME,
+        B.QUOTE_STATUS,
+        B.REQUEST_TYPE,
+        B.API_STATUS,
+        B.ACCESS_AGREE,
+        B.ACCESS_URL,
+        B.ACCESS_DATA_FORMAT,
+        B.API_AGREE,
+        B.API_URL,
+        B.DATA_FORMAT,
+        B.XML_HEAD,
+        B.API_DETAIL,
+        B.CREATE_USER_ID,
+        B.CREATE_TIME
+        FROM
+        tf_asiainfo_api_token A
+        LEFT JOIN tf_asiainfo_api B
+        ON A.API_ID=B.API_ID
+        where
+        A.CHANNEL_ID=#{map.channelId}
+        AND A.START_DATE &lt;=sysdate AND A.END_DATE>=sysdate
+        AND B.START_DATE &lt;=sysdate AND B.END_DATE>=sysdate
+        <if test="map.token!=null and map.token!=''">
+            AND A.TOKEN LIKE '%'||#{map.token}||'%'
+        </if>
+        <if test="map.apiName!=null and map.apiName!=''">
+            AND B.API_NAME LIKE '%'||#{map.apiName}||'%'
+        </if>
+    </select>
+
+
+
+
+</mapper>

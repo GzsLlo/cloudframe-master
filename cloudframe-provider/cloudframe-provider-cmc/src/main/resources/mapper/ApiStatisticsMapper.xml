@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.cmc.mapper.ApiStatisticsMapper">
+
+    <select id="getUseCount" resultType="com.ai.cloudframe.provider.api.sys.model.dto.ChargeOffDto" parameterType="Map">
+        SELECT
+       SUM(USE_COUNT) AS USE_COUNT
+        FROM
+        tf_asiainfo_api_statistics
+        WHERE
+        USER_ID=#{map.USER_ID}
+        AND GOOD_ID=#{map.GOOD_ID}
+        AND  PRODUCT_ID=#{map.PRODUCT_ID}
+    </select>
+
+    <update id="updateIschargeoff"  parameterType="Map">
+        UPDATE
+        tf_asiainfo_api_statistics
+        SET IS_CHARGEOFF='1'
+        WHERE
+        USER_ID=#{map.USER_ID}
+        AND GOOD_ID=#{map.GOOD_ID}
+        AND  PRODUCT_ID=#{map.PRODUCT_ID}
+        AND CALL_START_TIME &lt;= sysdate
+    </update>
+
+
+</mapper>

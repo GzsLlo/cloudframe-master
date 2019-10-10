@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ai.cloudframe.provider.cmc.mapper.ApplicationMapper">
+
+    <select id="applicationQuery" resultType="com.ai.cloudframe.provider.api.sys.model.dto.ApiAppDto" parameterType="Map">
+        SELECT APPLICATION_ID AUTOID,APPLICATION_NAME AUTONAME,APPLICATION_LABEL AUTOTAG,APPLICATION_URL URL,CREATE_USER_ID CREATEPERSON,START_DATE CREATETIME ,QUOTE_STATUS INTRODUCTION, "能力类" as LABEL
+        FROM tf_asiainfo_application
+        WHERE sysdate <![CDATA[ >= ]]>  START_DATE AND sysdate <![CDATA[ <= ]]>  END_DATE
+        <if test="map.createPerson!=null and map.createPerson!='' ">
+            AND CREATE_USER_ID = #{map.createPerson}
+        </if>
+        <if test="map.autoName!=null and map.autoName!='' ">
+            AND APPLICATION_NAME like '%'||#{map.appName}||'%'
+        </if>
+        <if test="map.ORDER_COLUMN!=null and map.ORDER_TYPE!=null">
+            ORDER BY
+            <if test="map.ORDER_COLUMN!=null and map.ORDER_COLUMN=='START_DATE'">
+                START_DATE
+            </if>
+            <if test="map.ORDER_TYPE!=null and map.ORDER_TYPE=='ascending'">
+                ASC
+            </if>
+            <if test="map.ORDER_TYPE!=null and map.ORDER_TYPE=='descending'">
+                DESC
+            </if>
+        </if>
+    </select>
+
+    <update id="updateByAppId"  parameterType="Map">
+        UPDATE tf_asiainfo_application SET QUOTE_STATUS = #{map.status}
+        WHERE sysdate <![CDATA[ >= ]]>  START_DATE AND sysdate <![CDATA[ <= ]]>  END_DATE
+        <if test="map.autoId!=null and map.autoId!='' ">
+            AND APPLICATION_ID = #{map.autoId}
+        </if>
+    </update>
+
+  <select id="getApplicationInfo" resultType="com.ai.cloudframe.provider.cmc.entity.Application"
+          parameterType="Map">
+    SELECT
+      APPLICATION_ID,
+      APPLICATION_NAME,
+      APPLICATION_LABEL,
+      APPLICATION_URL,
+      USER_ID,
+      APPLICATION_STATUS,
+      QUOTE_STATUS,
+      VERSION_NUM,
+      IMG,
+      APPLICATION_DATAIL,
+      CREATE_USER_ID,
+      START_DATE,
+      END_DATE,
+      COMPILE_STATUS,
+      RELEASE_STATUS,
+      RUN_STATUS,
+      API_URL
+    FROM
+      tf_asiainfo_application
+    WHERE
+      1 = 1
+    <if test = "param.applicationId != null and param.applicationId != ''">
+      AND APPLICATION_ID LIKE '%'||#{param.applicationId}||'%'
+    </if>
+    <if test = "param.applicationName != null and param.applicationName != ''">
+      AND APPLICATION_NAME LIKE '%'||#{param.applicationName}||'%'
+    </if>
+    <if test = "param.applicationStatus != null and param.applicationStatus != ''">
+      AND APPLICATION_STATUS LIKE '%'||#{param.applicationStatus}||'%'
+    </if>
+    <if test = "param.activeFlag != null and param.activeFlag != ''">
+      AND ACTIVE_FLAG = #{param.activeFlag}
+    </if>
+      ORDER BY START_DATE DESC
+  </select>
+
+  <update id="updateApplication"  parameterType="com.ai.cloudframe.provider.api.sys.model.vo.AddApplicationVo">
+    UPDATE
+      tf_asiainfo_application
+    SET APPLICATION_ID = #{applicationVo.applicationId}
+      <if test="applicationVo.applicationStatus != null and applicationVo.applicationStatus != ''">
+        , APPLICATION_STATUS = #{applicationVo.applicationStatus}
+      </if>
+      <if test="applicationVo.compileStatus != null and applicationVo.compileStatus != ''">
+        , COMPILE_STATUS = #{applicationVo.compileStatus}
+      </if>
+      <if test="applicationVo.releaseStatus != null and applicationVo.releaseStatus != ''">
+        , RELEASE_STATUS = #{applicationVo.releaseStatus}
+      </if>
+      <if test="applicationVo.runStatus != null and applicationVo.runStatus != ''">
+        , RUN_STATUS = #{applicationVo.runStatus}
+      </if>
+      <if test="applicationVo.versionNum != null and applicationVo.versionNum != ''">
+        , VERSION_NUM = #{applicationVo.versionNum}
+      </if>
+      <if test="applicationVo.apiUrl != null and applicationVo.apiUrl != ''">
+        , API_URL = #{applicationVo.apiUrl}
+      </if>
+      <if test="applicationVo.apiId != null and applicationVo.apiId != ''">
+        , API_ID = #{applicationVo.apiId}
+      </if>
+    WHERE
+        APPLICATION_ID = #{applicationVo.applicationId}
+  </update>
+
+    <select id="getApplicationProductRelation" parameterType="com.ai.cloudframe.provider.api.sys.model.dto.ApiDto"
+            resultType="com.ai.cloudframe.provider.api.sys.model.vo.ApplicationProductVo">
+        select a.application_id,c.product_id, c.good_id
+        from tf_asiainfo_application a
+        left join tf_asiainfo_introduce_product b
+          on a.api_id = b.atom_id
+        left join tf_asiainfo_product_good c
+          on b.product_id = c.product_id
+          where a.api_id = #{apiDto.apiId}
+    </select>
+</mapper>
