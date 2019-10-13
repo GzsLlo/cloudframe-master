@@ -18,6 +18,7 @@
   <modules>
     <module>cloudframe-provider-sys</module>
     <module>cloudframe-provider-param</module>
+    <module>cloudframe-provider-customer</module>
   </modules>
 
   <properties>
