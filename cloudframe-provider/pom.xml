@@ -1,54 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.ai.cloudframe</groupId>
-		<artifactId>cloudframe-master</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</parent>
-	<groupId>com.ai.cloudframe.provider</groupId>
-	<artifactId>cloudframe-provider</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>cloudframe-provider</name>
-	<packaging>pom</packaging>
-	<description>Micro service Provider</description>
+  <parent>
+    <groupId>com.ai.cloudframe</groupId>
+    <artifactId>cloudframe-master</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>com.ai.cloudframe.provider</groupId>
+  <artifactId>cloudframe-provider</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>cloudframe-provider</name>
+  <packaging>pom</packaging>
+  <description>Micro service Provider</description>
 
-	<modules>
-		<module>cloudframe-provider-sys</module>
-        <module>cloudframe-provider-param</module>
-        <module>cloudframe-provider-cmc</module>
-        <module>cloudframe-provider-application</module>
-    </modules>
+  <modules>
+    <module>cloudframe-provider-sys</module>
+    <module>cloudframe-provider-param</module>
+  </modules>
 
-	<properties>
-		<java.version>1.8</java.version>
-	</properties>
+  <properties>
+    <java.version>1.8</java.version>
+  </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
 
 
+  </dependencies>
 
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
